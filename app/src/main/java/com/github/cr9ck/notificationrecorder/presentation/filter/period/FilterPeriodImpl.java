@@ -35,6 +35,6 @@ public class FilterPeriodImpl implements FilterPeriod {
                 calendar.add(Calendar.MONTH, -1);
                 return calendar.getTimeInMillis();
         }
-        return System.currentTimeMillis();
+        return 0;
     }
 }

@@ -15,7 +15,5 @@ public interface NotificationsRepository {
     void addNotification(List<NotificationModel> notificationModel);
     void deleteNotifications();
     @NonNull
-    Flowable<List<NotificationModel>> getNotifications();
-    @NonNull
     Flowable<List<NotificationModel>> getNotifications(FilterPeriod period);
 }

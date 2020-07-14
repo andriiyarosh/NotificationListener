@@ -112,7 +112,7 @@ public class MainViewModel extends ViewModel {
                         .map(notificationModels -> new MainViewState(notificationModels, mode))
                         .toObservable();
         }
-        return notificationsRepository.getNotifications()
+        return notificationsRepository.getNotifications(new FilterPeriodImpl(ALL))
                 .map(notificationModels -> new MainViewState(notificationModels, mode))
                 .toObservable();
     }

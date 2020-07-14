@@ -39,12 +39,6 @@ public class NotificationsRepositoryImpl implements NotificationsRepository {
         notificationsDao.deleteNotifications();
     }
 
-    @Override
-    @NonNull
-    public Flowable<List<NotificationModel>> getNotifications() {
-        return notificationsDao.getNotification().map(notificationEntities -> mapper.mapToModel(notificationEntities));
-    }
-
     @NonNull
     @Override
     public Flowable<List<NotificationModel>> getNotifications(FilterPeriod period) {
