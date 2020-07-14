@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Notification recorder</string>
+    <string name="all">All</string>
+    <string name="per_hour">Per Hour</string>
+    <string name="per_day">Per Day</string>
+    <string name="per_month">Per Month</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="there_is_no_notifications">There\'s no notifications yet</string>
+    <string name="filterAction">Filter</string>
+</resources>
