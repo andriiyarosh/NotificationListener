@@ -1,12 +1,11 @@
 package com.github.cr9ck.notificationrecorder.model.mapper;
 
-import com.github.cr9ck.notificationrecorder.model.database.NotificationEntity;
 import com.github.cr9ck.notificationrecorder.model.NotificationModel;
+import com.github.cr9ck.notificationrecorder.model.database.NotificationEntity;
 import com.github.cr9ck.notificationrecorder.util.BitmapConverter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class NotificationTypesMapper implements TypeMapper<NotificationModel, NotificationEntity> {

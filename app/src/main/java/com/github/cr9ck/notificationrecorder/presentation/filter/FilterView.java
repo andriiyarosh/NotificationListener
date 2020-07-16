@@ -1,37 +1,52 @@
 package com.github.cr9ck.notificationrecorder.presentation.filter;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.github.cr9ck.notificationrecorder.R;
+import com.github.cr9ck.notificationrecorder.util.DimensionsConverter;
 
 public class FilterView extends PopupWindow {
 
-    private View root;
     private FilterSelectedListener listener;
 
     public FilterView(@NonNull FilterSelectedListener listener,
-                      @NonNull LayoutInflater inflater,
-                      @NonNull View root) {
+                      @NonNull LayoutInflater inflater) {
         super(inflater.inflate(R.layout.filter_view, null), ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        this.root = root;
         this.listener = listener;
-        initFilterOption();
         initListener();
     }
 
-    public void show() {
-        showAsDropDown(root);
+    public void show(View view) {
+        int offset = DimensionsConverter.dpToPx(32f, view.getContext());
+        showAtLocation(view, Gravity.TOP | Gravity.END, offset, offset * 2);
     }
 
-    private void initFilterOption() {
-        ((RadioButton) getContentView().findViewById(R.id.filterAll)).setChecked(true);
+    public void setFilteringMode(FilterMode filteringMode) {
+        Log.d("TEST_TEST", filteringMode.toString());
+        switch (filteringMode) {
+            case ALL:
+                ((RadioButton) getContentView().findViewById(R.id.filterAll)).setChecked(true);
+                break;
+            case HOUR:
+                ((RadioButton) getContentView().findViewById(R.id.filterHour)).setChecked(true);
+                break;
+            case DAY:
+                ((RadioButton) getContentView().findViewById(R.id.filterDay)).setChecked(true);
+                break;
+            case MONTH:
+                ((RadioButton) getContentView().findViewById(R.id.filterMonth)).setChecked(true);
+                break;
+        }
     }
 
     private void initListener() {

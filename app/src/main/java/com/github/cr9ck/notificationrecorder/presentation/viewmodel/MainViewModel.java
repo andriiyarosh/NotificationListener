@@ -1,12 +1,14 @@
 package com.github.cr9ck.notificationrecorder.presentation.viewmodel;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.github.cr9ck.notificationrecorder.Application;
 import com.github.cr9ck.notificationrecorder.model.NotificationModel;
 import com.github.cr9ck.notificationrecorder.model.repository.NotificationsRepository;
 import com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode;
@@ -14,6 +16,7 @@ import com.github.cr9ck.notificationrecorder.presentation.filter.period.FilterPe
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,7 +24,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
 
 import static com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode.ALL;
 import static com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode.DAY;
@@ -30,17 +35,24 @@ import static com.github.cr9ck.notificationrecorder.presentation.filter.FilterMo
 
 public class MainViewModel extends ViewModel {
 
-    private @NonNull
-    NotificationsRepository notificationsRepository;
-    private @NonNull
-    PublishSubject<FilterMode> subject = PublishSubject.create();
-    private MutableLiveData<MainViewState> viewState = new MutableLiveData<>();
+    private NotificationsRepository notificationsRepository;
+    private boolean serviceState;
+
     private CompositeDisposable disposable = new CompositeDisposable();
+    private BehaviorSubject<FilterMode> filterTypeObservable = BehaviorSubject.create();
+
+    private MutableLiveData<FilterMode> filteringMode = new MutableLiveData<>();
+    private MutableLiveData<List<NotificationModel>> notifications = new MutableLiveData<>();
+    private MutableLiveData<Boolean> serviceActive = new MutableLiveData<>();
 
     @Inject
-    public MainViewModel(@NonNull NotificationsRepository notificationsRepository) {
+    public MainViewModel(@NonNull NotificationsRepository notificationsRepository, FilterMode filterMode, boolean isServiceActive) {
         this.notificationsRepository = notificationsRepository;
-        initState();
+        serviceState = isServiceActive;
+        serviceActive.setValue(serviceState);
+        initNotificationFiltering();
+        filterTypeObservable.onNext(filterMode);
+        Log.d("TEST_TEST", "MainViewModel");
 //        addNot();
     }
 
@@ -51,23 +63,37 @@ public class MainViewModel extends ViewModel {
     }
 
     public void filterAll() {
-        subject.onNext(ALL);
+        filterTypeObservable.onNext(ALL);
     }
 
     public void filterForHour() {
-        subject.onNext(HOUR);
+        filterTypeObservable.onNext(HOUR);
     }
 
     public void filterForDay() {
-        subject.onNext(DAY);
+        filterTypeObservable.onNext(DAY);
     }
 
     public void filterForMonth() {
-        subject.onNext(MONTH);
+        filterTypeObservable.onNext(MONTH);
     }
 
-    public LiveData<MainViewState> getViewState() {
-        return viewState;
+    public void toggleService() {
+        serviceState = !serviceState;
+        serviceActive.setValue(serviceState);
+        Application.setForegroundServiceRunning(serviceState);
+    }
+
+    public LiveData<List<NotificationModel>> getNotifications() {
+        return notifications;
+    }
+
+    public LiveData<Boolean> getServiceActiveState() {
+        return serviceActive;
+    }
+
+    public LiveData<FilterMode> getFilteringMode() {
+        return filteringMode;
     }
 
     public void addNot() {
@@ -84,36 +110,30 @@ public class MainViewModel extends ViewModel {
         }).start();
     }
 
-    private void initState() {
+    private void initNotificationFiltering() {
         disposable.add(
-                subject.subscribeOn(Schedulers.io())
+                filterTypeObservable.subscribeOn(Schedulers.io())
+                        .doOnNext(filterMode -> this.filteringMode.postValue(filterMode))
                         .flatMap(this::switchSource)
-                        .map(mainViewState -> {
-                            Collections.sort(mainViewState.getNotifications(), (notificationModel, t1) -> t1.getCalendar().compareTo(notificationModel.getCalendar()));
-                            return mainViewState;
+                        .map(notifications -> {
+                            Log.d("TEST_TEST", "initNotificationFiltering");
+                            Collections.sort(notifications, (notificationModel, t1) -> t1.getCalendar().compareTo(notificationModel.getCalendar()));
+                            return notifications;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe((state -> viewState.setValue(state)))
+                        .subscribe((notificationsList -> notifications.setValue(notificationsList)))
         );
     }
 
-    private Observable<MainViewState> switchSource(FilterMode mode) {
+    private Observable<List<NotificationModel>> switchSource(FilterMode mode) {
         switch (mode) {
             case HOUR:
-                return notificationsRepository.getNotifications(new FilterPeriodImpl(HOUR))
-                        .map(notificationModels -> new MainViewState(notificationModels, mode))
-                        .toObservable();
+                return notificationsRepository.getNotifications(new FilterPeriodImpl(HOUR)).toObservable();
             case DAY:
-                return notificationsRepository.getNotifications(new FilterPeriodImpl(DAY))
-                        .map(notificationModels -> new MainViewState(notificationModels, mode))
-                        .toObservable();
+                return notificationsRepository.getNotifications(new FilterPeriodImpl(DAY)).toObservable();
             case MONTH:
-                return notificationsRepository.getNotifications(new FilterPeriodImpl(MONTH))
-                        .map(notificationModels -> new MainViewState(notificationModels, mode))
-                        .toObservable();
+                return notificationsRepository.getNotifications(new FilterPeriodImpl(MONTH)).toObservable();
         }
-        return notificationsRepository.getNotifications(new FilterPeriodImpl(ALL))
-                .map(notificationModels -> new MainViewState(notificationModels, mode))
-                .toObservable();
+        return notificationsRepository.getNotifications(new FilterPeriodImpl(ALL)).toObservable();
     }
 }

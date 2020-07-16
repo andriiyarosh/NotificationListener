@@ -1,8 +1,11 @@
 package com.github.cr9ck.notificationrecorder.presentation;
 
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,10 +54,12 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
         }
 
         public void setNotification(NotificationModel notification) {
+            Drawable imageDrawable = new BitmapDrawable(view.getResources(), notification.getIcon());
             ((TextView)view.findViewById(R.id.title)).setText(notification.getAppName());
             ((TextView)view.findViewById(R.id.text)).setText(notification.getText());
             ((TextView)view.findViewById(R.id.time)).setText(notification.getTime());
             ((TextView)view.findViewById(R.id.date)).setText(notification.getDay());
+            ((ImageView)view.findViewById(R.id.icon)).setImageDrawable(imageDrawable);
         }
     }
 }

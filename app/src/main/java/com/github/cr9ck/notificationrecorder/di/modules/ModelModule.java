@@ -1,11 +1,15 @@
 package com.github.cr9ck.notificationrecorder.di.modules;
 
+import android.app.ActivityManager;
 import android.content.Context;
 
+import com.github.cr9ck.notificationrecorder.Application;
 import com.github.cr9ck.notificationrecorder.model.database.NotificationsDatabase;
 import com.github.cr9ck.notificationrecorder.model.mapper.NotificationTypesMapper;
 import com.github.cr9ck.notificationrecorder.model.repository.NotificationsRepository;
 import com.github.cr9ck.notificationrecorder.model.repository.NotificationsRepositoryImpl;
+import com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode;
+import com.github.cr9ck.notificationrecorder.services.AppForegroundService;
 
 import javax.inject.Singleton;
 
@@ -28,5 +32,15 @@ public class ModelModule {
                 new NotificationTypesMapper(),
                 notificationsDatabase.notificationsDao()
         );
+    }
+
+    @Provides
+    public boolean provideServiceActivityStatus() {
+        return Application.isIsForegroundServiceRunning();
+    }
+
+    @Provides
+    public FilterMode provideDefaultFilterMode() {
+        return FilterMode.ALL;
     }
 }

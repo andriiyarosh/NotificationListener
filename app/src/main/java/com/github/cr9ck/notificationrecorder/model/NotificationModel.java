@@ -2,11 +2,12 @@ package com.github.cr9ck.notificationrecorder.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class NotificationModel {
+public class NotificationModel implements Serializable {
 
     private String appName;
     private String text;
