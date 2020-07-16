@@ -8,4 +8,8 @@
     <string name="stop">Stop</string>
     <string name="there_is_no_notifications">There\'s no notifications yet</string>
     <string name="filterAction">Filter</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="notification_listener_service">Notification Listener Service</string>
+    <string name="notification_listener_service_expplanation">This app requires you to allow Notification Listener Service to work properly</string>
 </resources>

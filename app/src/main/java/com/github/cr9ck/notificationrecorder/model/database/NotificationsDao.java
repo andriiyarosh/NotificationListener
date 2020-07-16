@@ -1,6 +1,5 @@
 package com.github.cr9ck.notificationrecorder.model.database;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -12,11 +11,8 @@ import io.reactivex.Flowable;
 @Dao
 public interface NotificationsDao {
 
-    @Query("SELECT * FROM Notifications")
-    Flowable<List<NotificationEntity>> getNotification();
-
-    @Query("SELECT * FROM Notifications WHERE timeStamp BETWEEN :start AND :to")
-    Flowable<List<NotificationEntity>> getNotification(long start, long to);
+    @Query("SELECT * FROM Notifications WHERE timeStamp >= :start")
+    Flowable<List<NotificationEntity>> getNotification(long start);
 
     @Query("DELETE FROM Notifications")
     void deleteNotifications();

@@ -1,5 +1,7 @@
 package com.github.cr9ck.notificationrecorder.presentation;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -46,7 +48,7 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
 
     static class NotificationViewHolder extends RecyclerView.ViewHolder {
 
-        View view;
+        private View view;
 
         public NotificationViewHolder(@NonNull View view) {
             super(view);
@@ -54,12 +56,18 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
         }
 
         public void setNotification(NotificationModel notification) {
-            Drawable imageDrawable = new BitmapDrawable(view.getResources(), notification.getIcon());
+            try {
+                PackageManager packageManager = view.getContext().getPackageManager();
+                PackageInfo packageInfo = packageManager.getPackageInfo(notification.getAppPackageName(), 0);
+                Drawable icon = packageInfo.applicationInfo.loadIcon(packageManager);
+                ((ImageView)view.findViewById(R.id.icon)).setImageDrawable(icon);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
             ((TextView)view.findViewById(R.id.title)).setText(notification.getAppName());
             ((TextView)view.findViewById(R.id.text)).setText(notification.getText());
             ((TextView)view.findViewById(R.id.time)).setText(notification.getTime());
             ((TextView)view.findViewById(R.id.date)).setText(notification.getDay());
-            ((ImageView)view.findViewById(R.id.icon)).setImageDrawable(imageDrawable);
         }
     }
 }

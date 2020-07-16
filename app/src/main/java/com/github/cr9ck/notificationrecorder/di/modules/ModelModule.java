@@ -1,6 +1,5 @@
 package com.github.cr9ck.notificationrecorder.di.modules;
 
-import android.app.ActivityManager;
 import android.content.Context;
 
 import com.github.cr9ck.notificationrecorder.Application;
@@ -9,7 +8,6 @@ import com.github.cr9ck.notificationrecorder.model.mapper.NotificationTypesMappe
 import com.github.cr9ck.notificationrecorder.model.repository.NotificationsRepository;
 import com.github.cr9ck.notificationrecorder.model.repository.NotificationsRepositoryImpl;
 import com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode;
-import com.github.cr9ck.notificationrecorder.services.AppForegroundService;
 
 import javax.inject.Singleton;
 
@@ -36,7 +34,7 @@ public class ModelModule {
 
     @Provides
     public boolean provideServiceActivityStatus() {
-        return Application.isIsForegroundServiceRunning();
+        return Application.isForegroundServiceRunning();
     }
 
     @Provides

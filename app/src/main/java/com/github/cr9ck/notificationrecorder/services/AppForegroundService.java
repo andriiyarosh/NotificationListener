@@ -6,8 +6,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -22,7 +20,6 @@ import java.util.Calendar;
 
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_NAME;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_CALENDAR;
-import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_ICON;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_TEXT;
 
 public class AppForegroundService extends Service {
@@ -40,7 +37,7 @@ public class AppForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(NotificationReceiver.ActionNotificationReceived);
+        intentFilter.addAction(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
         registerReceiver(notificationReceiver, intentFilter);
     }
 
@@ -48,7 +45,7 @@ public class AppForegroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification serviceNotification = getNotification();
         startForeground(SERVICE_NOTIFICATION_ID, serviceNotification);
-        sendNot();
+//        sendNot();
         return START_NOT_STICKY;
     }
 
@@ -70,10 +67,7 @@ public class AppForegroundService extends Service {
         c.add(Calendar.DATE, -1);
 
         Intent receiverIntent = new Intent(this, NotificationReceiver.class);
-        receiverIntent.setAction(NotificationReceiver.ActionNotificationReceived);
-//        BitmapFactory.decodeResource(getResources(),
-//                R.drawable.custom_radio_pulp);
-//        receiverIntent.putExtra(EXTRA_NOTIFICATION_ICON, getDrawable(R.drawable.custom_radio_pulp)));
+        receiverIntent.setAction(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
         receiverIntent.putExtra(EXTRA_NOTIFICATION_APP_NAME, "AppName");
         receiverIntent.putExtra(EXTRA_NOTIFICATION_TEXT, "SomeText");
         receiverIntent.putExtra(EXTRA_NOTIFICATION_CALENDAR, c);

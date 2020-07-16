@@ -3,16 +3,19 @@ package com.github.cr9ck.notificationrecorder.presentation;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.cr9ck.notificationrecorder.Application;
 import com.github.cr9ck.notificationrecorder.R;
 import com.github.cr9ck.notificationrecorder.databinding.ActivityMainBinding;
 import com.github.cr9ck.notificationrecorder.model.NotificationModel;
@@ -32,6 +35,7 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     private ViewModelProvider.Factory factory;
     private MainViewModel viewModel;
     private FilterView filterView;
+    private static final String ACTION_NOTIFICATION_LISTENER_SETTINGS = "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +104,13 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     }
 
     private void initOnClick() {
-        binding.serviceToggleButton.setOnClickListener((v) -> viewModel.toggleService());
+        binding.serviceToggleButton.setOnClickListener((v) -> {
+            if (!((Application) getApplication()).isNotificationServiceEnabled()) {
+                getNotificationListenerDialog().show();
+            } else {
+                viewModel.toggleService();
+            }
+        });
     }
 
     private void initObservers() {
@@ -110,6 +120,7 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     }
 
     private void updateAdapter(List<NotificationModel> notifications) {
+        Log.d("TEST_TEST", "updateAdapter");
         binding.noNotificationGroup.setVisibility(notifications.isEmpty() ? View.VISIBLE : View.GONE);
         binding.rvList.setVisibility(notifications.isEmpty() ? View.GONE : View.VISIBLE);
         getAdapter().setItems(notifications);
@@ -127,7 +138,7 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     }
 
     private void setFilterViewVisibility(boolean isVisible) {
-        if(isVisible) {
+        if (isVisible) {
             filterView.show(findViewById(R.id.filterMenu));
             binding.rootView.getForeground().setAlpha(100);
         } else {
@@ -148,5 +159,14 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     private void stopService() {
         Intent serviceIntent = new Intent(MainActivity.this, AppForegroundService.class);
         stopService(serviceIntent);
+    }
+
+    private AlertDialog getNotificationListenerDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle(R.string.notification_listener_service)
+                .setMessage(R.string.notification_listener_service_expplanation)
+                .setPositiveButton(getString(R.string.yes), (dialog, id) -> startActivity(new Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS)))
+                .setNegativeButton(getString(R.string.no), (dialog, id) -> dialog.dismiss());
+        return dialogBuilder.create();
     }
 }

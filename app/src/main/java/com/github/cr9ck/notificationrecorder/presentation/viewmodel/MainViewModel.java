@@ -25,8 +25,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.ReplaySubject;
 
 import static com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode.ALL;
 import static com.github.cr9ck.notificationrecorder.presentation.filter.FilterMode.DAY;
@@ -103,9 +101,9 @@ public class MainViewModel extends ViewModel {
             c.add(Calendar.DATE, -1);
             notificationsRepository.addNotification(new NotificationModel(
                     "Date",
+                    "test.package.name",
                     "Notificaiton text",
-                    c,
-                    Bitmap.createBitmap(100, 100, Bitmap.Config.ALPHA_8)
+                    c
             ));
         }).start();
     }

@@ -17,11 +17,6 @@ public class FilterPeriodImpl implements FilterPeriod {
         return calculateStartPeriod();
     }
 
-    @Override
-    public long getEndPeriod() {
-        return System.currentTimeMillis();
-    }
-
     private long calculateStartPeriod() {
         Calendar calendar = Calendar.getInstance();
         switch (filterMode) {

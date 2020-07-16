@@ -2,7 +2,6 @@ package com.github.cr9ck.notificationrecorder.model.mapper;
 
 import com.github.cr9ck.notificationrecorder.model.NotificationModel;
 import com.github.cr9ck.notificationrecorder.model.database.NotificationEntity;
-import com.github.cr9ck.notificationrecorder.util.BitmapConverter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,8 +13,8 @@ public class NotificationTypesMapper implements TypeMapper<NotificationModel, No
     public NotificationEntity mapToEntity(NotificationModel model) {
         return new NotificationEntity(
                 model.getAppName(),
+                model.getAppPackageName(),
                 model.getText(),
-                BitmapConverter.bitmapToByteArray(model.getIcon()),
                 model.getTimestamp()
         );
     }
@@ -26,9 +25,9 @@ public class NotificationTypesMapper implements TypeMapper<NotificationModel, No
         calendar.setTimeInMillis(entity.getTime());
         return new NotificationModel(
                 entity.getAppName(),
+                entity.getAppPackageName(),
                 entity.getNotificationText(),
-                calendar,
-                BitmapConverter.byteArrayToBitmap(entity.getIcon())
+                calendar
         );
     }
 

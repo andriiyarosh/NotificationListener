@@ -42,6 +42,6 @@ public class NotificationsRepositoryImpl implements NotificationsRepository {
     @NonNull
     @Override
     public Flowable<List<NotificationModel>> getNotifications(FilterPeriod period) {
-        return notificationsDao.getNotification(period.getStartPeriod(), period.getEndPeriod()).map(notificationEntities -> mapper.mapToModel(notificationEntities));
+        return notificationsDao.getNotification(period.getStartPeriod()).map(notificationEntities -> mapper.mapToModel(notificationEntities));
     }
 }

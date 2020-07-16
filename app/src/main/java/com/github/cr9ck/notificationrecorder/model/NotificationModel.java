@@ -10,15 +10,15 @@ import java.util.Calendar;
 public class NotificationModel implements Serializable {
 
     private String appName;
+    private String appPackageName;
     private String text;
     private Calendar calendar;
-    private Bitmap icon;
 
-    public NotificationModel(String appName, String text, Calendar calendar, Bitmap icon) {
+    public NotificationModel(String appName, String appPackageName, String text, Calendar calendar) {
         this.appName = appName;
+        this.appPackageName = appPackageName;
         this.text = text;
         this.calendar = calendar;
-        this.icon = icon;
     }
 
     public String getAppName() {
@@ -47,7 +47,7 @@ public class NotificationModel implements Serializable {
         return calendar;
     }
 
-    public Bitmap getIcon() {
-        return icon;
+    public String getAppPackageName() {
+        return appPackageName;
     }
 }
