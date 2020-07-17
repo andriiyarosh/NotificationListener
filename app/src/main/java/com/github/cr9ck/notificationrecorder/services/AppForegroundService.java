@@ -75,7 +75,7 @@ public class AppForegroundService extends DaggerService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, Application.NOTIFICATION_SERVICE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(getString(R.string.app_name))
+                .setContentTitle(getString(R.string.recording_notifications))
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setContentIntent(pendingIntent)

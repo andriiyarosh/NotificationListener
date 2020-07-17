@@ -15,4 +15,6 @@
     <string name="notification_foreground_service">Channel where the foreground service is displayed</string>
     <string name="notification_explanation">Channel where app notifications about amount of recorded notifications come.</string>
     <string name="notifications_recorded">%s notifications recorded</string>
+    <string name="recording_notifications">Recording your notificaitons</string>
+    <string name="app_icon">App icon</string>
 </resources>

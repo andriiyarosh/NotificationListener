@@ -15,7 +15,6 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 
 import com.github.cr9ck.notificationrecorder.R;
-import com.github.cr9ck.notificationrecorder.util.DimensionsConverter;
 
 public class FilterView extends PopupWindow {
 
