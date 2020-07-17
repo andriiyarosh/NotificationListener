@@ -2,6 +2,7 @@ package com.github.cr9ck.notificationrecorder.model.database;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
@@ -17,12 +18,6 @@ public interface NotificationsDao {
     @Query("SELECT COUNT(*) FROM Notifications")
     int getNotificationsCount();
 
-    @Query("DELETE FROM Notifications")
-    void deleteNotifications();
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNotification(NotificationEntity notification);
-
-    @Insert
-    void insertNotification(List<NotificationEntity> notification);
 }

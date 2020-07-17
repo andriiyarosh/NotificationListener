@@ -11,6 +11,7 @@ import java.util.Objects;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_NAME;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_PACKAGE_NAME;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_CALENDAR;
+import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_ID;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_TEXT;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -23,6 +24,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             Intent processorService = new Intent(context, NotificationProcessorService.class);
 
+            processorService.putExtra(EXTRA_NOTIFICATION_ID, intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));
             processorService.putExtra(EXTRA_NOTIFICATION_APP_NAME, intent.getStringExtra(EXTRA_NOTIFICATION_APP_NAME));
             processorService.putExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME, intent.getStringExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME));
             processorService.putExtra(EXTRA_NOTIFICATION_TEXT, intent.getStringExtra(EXTRA_NOTIFICATION_TEXT));

@@ -1,5 +1,6 @@
 package com.github.cr9ck.notificationrecorder.model.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,8 +8,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Notifications")
 public class NotificationEntity {
 
-    @PrimaryKey(autoGenerate = true)
-    private long id;
+    @PrimaryKey
+    private @NonNull
+    String id;
     private String appName;
     private String appPackageName;
     private String notificationText;
@@ -16,18 +18,19 @@ public class NotificationEntity {
     @ColumnInfo(name = "timeStamp")
     private long time;
 
-    public NotificationEntity(String appName, String appPackageName, String notificationText, long time) {
+    public NotificationEntity(String id, String appName, String appPackageName, String notificationText, long time) {
+        this.id = id;
         this.appName = appName;
         this.appPackageName = appPackageName;
         this.notificationText = notificationText;
         this.time = time;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

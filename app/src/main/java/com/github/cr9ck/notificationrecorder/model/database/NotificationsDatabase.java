@@ -14,6 +14,6 @@ public abstract class NotificationsDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "NotificationsDatabase";
 
     public static NotificationsDatabase getInstance(Context context) {
-        return Room.databaseBuilder(context, NotificationsDatabase.class, DATABASE_NAME).build();
+        return Room.databaseBuilder(context, NotificationsDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
     }
 }

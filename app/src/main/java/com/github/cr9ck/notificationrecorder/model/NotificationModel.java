@@ -8,12 +8,14 @@ import java.util.Locale;
 
 public class NotificationModel implements Serializable {
 
+    private int id;
     private String appName;
     private String appPackageName;
     private String text;
     private Calendar calendar;
 
-    public NotificationModel(String appName, String appPackageName, String text, Calendar calendar) {
+    public NotificationModel(int notificationId, String appName, String appPackageName, String text, Calendar calendar) {
+        this.id = notificationId;
         this.appName = appName;
         this.appPackageName = appPackageName;
         this.text = text;
@@ -48,5 +50,9 @@ public class NotificationModel implements Serializable {
 
     public String getAppPackageName() {
         return appPackageName;
+    }
+
+    public String getId() {
+        return appPackageName + id;
     }
 }

@@ -14,6 +14,7 @@ import java.util.Calendar;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_NAME;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_PACKAGE_NAME;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_CALENDAR;
+import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_ID;
 import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_TEXT;
 
 
@@ -45,11 +46,12 @@ public class NotificationListener extends NotificationListenerService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(sbn.getPostTime());
 
-        sendBroadcast(sbn.getPackageName(), appName, text, calendar);
+        sendBroadcast(sbn.getId(), sbn.getPackageName(), appName, text, calendar);
     }
 
-    private void sendBroadcast(String packageName, String appName, String text, Calendar calendar) {
+    private void sendBroadcast(int notificationId, String packageName, String appName, String text, Calendar calendar) {
         Intent intent = new Intent(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
+        intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         intent.putExtra(EXTRA_NOTIFICATION_APP_NAME, appName);
         intent.putExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME, packageName);
         intent.putExtra(EXTRA_NOTIFICATION_CALENDAR, calendar);

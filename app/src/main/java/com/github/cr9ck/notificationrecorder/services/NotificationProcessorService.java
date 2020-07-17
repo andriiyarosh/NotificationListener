@@ -20,6 +20,7 @@ public class NotificationProcessorService extends JobIntentService {
     private NotificationsRepository notificationsRepository;
     private static final int JOB_ID = 1111;
 
+    public static final String EXTRA_NOTIFICATION_ID = "EXTRA_NOTIFICATION_ID";
     public static final String EXTRA_NOTIFICATION_APP_NAME = "EXTRA_NOTIFICATION_APP_NAME";
     public static final String EXTRA_NOTIFICATION_APP_PACKAGE_NAME = "EXTRA_NOTIFICATION_APP_PACKAGE_NAME";
     public static final String EXTRA_NOTIFICATION_TEXT = "EXTRA_NOTIFICATION_TEXT";
@@ -38,6 +39,7 @@ public class NotificationProcessorService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         NotificationModel notification = new NotificationModel(
+                intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1),
                 intent.getStringExtra(EXTRA_NOTIFICATION_APP_NAME),
                 intent.getStringExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME),
                 intent.getStringExtra(EXTRA_NOTIFICATION_TEXT),
