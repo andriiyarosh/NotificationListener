@@ -7,6 +7,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import androidx.annotation.RequiresApi;
+
 import com.github.cr9ck.notificationrecorder.di.DaggerAppComponent;
 
 import dagger.android.AndroidInjector;
@@ -14,7 +16,8 @@ import dagger.android.support.DaggerApplication;
 
 public class Application extends DaggerApplication {
 
-    public static final String NOTIFICATION_SERVICE_ID = "NOTIFICATION_SERVICE_ID";
+    public static final String NOTIFICATION_SERVICE_CHANNEL_ID = "NOTIFICATION_SERVICE_CHANNEL_ID";
+    public static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
     private static final String ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners";
     private static boolean isForegroundServiceRunning;
 
@@ -26,24 +29,6 @@ public class Application extends DaggerApplication {
         return isForegroundServiceRunning;
     }
 
-    public boolean isNotificationServiceEnabled(){
-        String pkgName = getPackageName();
-        final String flat = Settings.Secure.getString(getContentResolver(),
-                ENABLED_NOTIFICATION_LISTENERS);
-        if (!TextUtils.isEmpty(flat)) {
-            final String[] names = flat.split(":");
-            for (int i = 0; i < names.length; i++) {
-                final ComponentName cn = ComponentName.unflattenFromString(names[i]);
-                if (cn != null) {
-                    if (TextUtils.equals(pkgName, cn.getPackageName())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
         return DaggerAppComponent.factory().create(this);
@@ -52,18 +37,49 @@ public class Application extends DaggerApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
+        createNotificationChannels();
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceNotificationChannel = new NotificationChannel(
-                    NOTIFICATION_SERVICE_ID,
-                    "Channel 1",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceNotificationChannel);
+    public boolean isNotificationServiceEnabled() {
+        final String flat = Settings.Secure.getString(getContentResolver(),
+                ENABLED_NOTIFICATION_LISTENERS);
+        if (!TextUtils.isEmpty(flat)) {
+            final String[] names = flat.split(":");
+            for (String name : names) {
+                final ComponentName cn = ComponentName.unflattenFromString(name);
+                if (cn != null) {
+                    if (TextUtils.equals(getPackageName(), cn.getPackageName())) {
+                        return true;
+                    }
+                }
+            }
         }
+        return false;
+    }
+
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(getForegroundServiceChannel());
+            manager.createNotificationChannel(getNotificationChannel());
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private NotificationChannel getForegroundServiceChannel() {
+        return new NotificationChannel(
+                NOTIFICATION_SERVICE_CHANNEL_ID,
+                getString(R.string.notification_foreground_service),
+                NotificationManager.IMPORTANCE_LOW
+        );
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private NotificationChannel getNotificationChannel() {
+        return new NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                getString(R.string.notification_explanation),
+                NotificationManager.IMPORTANCE_HIGH
+        );
     }
 }

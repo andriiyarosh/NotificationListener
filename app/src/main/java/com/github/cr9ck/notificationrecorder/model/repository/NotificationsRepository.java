@@ -12,8 +12,7 @@ import io.reactivex.Flowable;
 public interface NotificationsRepository {
 
     void addNotification(NotificationModel notificationModel);
-    void addNotification(List<NotificationModel> notificationModel);
-    void deleteNotifications();
     @NonNull
     Flowable<List<NotificationModel>> getNotifications(FilterPeriod period);
+    int  getNotificationsCount();
 }

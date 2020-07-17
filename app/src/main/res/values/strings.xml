@@ -12,4 +12,7 @@
     <string name="yes">Yes</string>
     <string name="notification_listener_service">Notification Listener Service</string>
     <string name="notification_listener_service_expplanation">This app requires you to allow Notification Listener Service to work properly</string>
+    <string name="notification_foreground_service">Channel where the foreground service is displayed</string>
+    <string name="notification_explanation">Channel where app notifications about amount of recorded notifications come.</string>
+    <string name="notifications_recorded">%s notifications recorded</string>
 </resources>

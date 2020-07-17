@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.cr9ck.notificationrecorder.di.viewmodel.ViewModelFactory;
 import com.github.cr9ck.notificationrecorder.di.viewmodel.ViewModelKey;
-import com.github.cr9ck.notificationrecorder.presentation.viewmodel.MainViewModel;
+import com.github.cr9ck.notificationrecorder.presentation.MainViewModel;
 
 import dagger.Binds;
 import dagger.Module;

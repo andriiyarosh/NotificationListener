@@ -2,10 +2,12 @@ package com.github.cr9ck.notificationrecorder.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -16,16 +18,19 @@ import com.github.cr9ck.notificationrecorder.R;
 import com.github.cr9ck.notificationrecorder.presentation.MainActivity;
 import com.github.cr9ck.notificationrecorder.receiver.NotificationReceiver;
 
-import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
-import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_APP_NAME;
-import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_CALENDAR;
-import static com.github.cr9ck.notificationrecorder.services.NotificationProcessorService.EXTRA_NOTIFICATION_TEXT;
+import javax.inject.Inject;
 
-public class AppForegroundService extends Service {
+import dagger.android.DaggerService;
 
-    private NotificationReceiver notificationReceiver = new NotificationReceiver();
-    private static final int SERVICE_NOTIFICATION_ID = 4312;
+public class AppForegroundService extends DaggerService {
+
+    private NotificationReceiver notificationReceiver;
+    private static final int FOREGROUND_SERVICE_NOTIFICATION_ID = 4312;
+    private static final int NOTIFICATION_JOB_ID = 3123;
+    private static final long NOTIFICATION_JOB_INTERVAL = TimeUnit.HOURS.toMillis(3);
+    private static final long NOTIFICATION_JOB_INTERVAL_FLEX = (long) (NOTIFICATION_JOB_INTERVAL * 0.01);
 
     @Nullable
     @Override
@@ -36,48 +41,61 @@ public class AppForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
-        registerReceiver(notificationReceiver, intentFilter);
+        registerReceiver();
+        scheduleNotificationJob();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification serviceNotification = getNotification();
-        startForeground(SERVICE_NOTIFICATION_ID, serviceNotification);
-//        sendNot();
-        return START_NOT_STICKY;
-    }
-
-    private Notification getNotification() {
-        Intent contentIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, contentIntent, 0);
-        return new NotificationCompat.Builder(this, Application.NOTIFICATION_SERVICE_ID)
-                .setSmallIcon(R.drawable.custom_radio_pulp)
-                .setContentTitle(getString(R.string.app_name))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setContentIntent(pendingIntent)
-                .build();
-    }
-
-    private void sendNot() {
-        Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.DATE, -1);
-
-        Intent receiverIntent = new Intent(this, NotificationReceiver.class);
-        receiverIntent.setAction(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
-        receiverIntent.putExtra(EXTRA_NOTIFICATION_APP_NAME, "AppName");
-        receiverIntent.putExtra(EXTRA_NOTIFICATION_TEXT, "SomeText");
-        receiverIntent.putExtra(EXTRA_NOTIFICATION_CALENDAR, c);
-
-        sendBroadcast(receiverIntent);
+        startForeground(FOREGROUND_SERVICE_NOTIFICATION_ID, serviceNotification);
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        cancelNotificationJob();
         unregisterReceiver(notificationReceiver);
+    }
+
+    @Inject
+    public void setNotificationReceiver(NotificationReceiver notificationReceiver) {
+        this.notificationReceiver = notificationReceiver;
+    }
+
+    private void registerReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
+        registerReceiver(notificationReceiver, intentFilter);
+    }
+
+    private Notification getNotification() {
+        Intent contentIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Builder(this, Application.NOTIFICATION_SERVICE_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(getString(R.string.app_name))
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setContentIntent(pendingIntent)
+                .build();
+    }
+
+    private void scheduleNotificationJob() {
+        ComponentName componentName = new ComponentName(this, NotificationJobScheduler.class);
+        JobInfo.Builder jobBuilder = new JobInfo.Builder(NOTIFICATION_JOB_ID, componentName).setPersisted(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            jobBuilder.setPeriodic(NOTIFICATION_JOB_INTERVAL, NOTIFICATION_JOB_INTERVAL_FLEX);
+        } else {
+            jobBuilder.setPeriodic(NOTIFICATION_JOB_INTERVAL);
+        }
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobBuilder.build());
+    }
+
+    private void cancelNotificationJob() {
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(NOTIFICATION_JOB_ID);
     }
 }

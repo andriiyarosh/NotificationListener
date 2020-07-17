@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import static androidx.room.ColumnInfo.BLOB;
-
 @Entity(tableName = "Notifications")
 public class NotificationEntity {
 

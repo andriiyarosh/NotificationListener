@@ -32,14 +32,14 @@ public class NotificationListener extends NotificationListenerService {
             text += notificationTitle + " ";
         if (notificationText != null)
             text += notificationText;
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(sbn.getPostTime());
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(sbn.getPackageName(), 0);
             appName = packageInfo.applicationInfo.loadLabel(getPackageManager()).toString();
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(sbn.getPostTime());
 
         Intent intent = new Intent(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
         intent.putExtra(EXTRA_NOTIFICATION_APP_NAME, appName);
@@ -47,10 +47,5 @@ public class NotificationListener extends NotificationListenerService {
         intent.putExtra(EXTRA_NOTIFICATION_CALENDAR, calendar);
         intent.putExtra(EXTRA_NOTIFICATION_TEXT, text);
         sendBroadcast(intent);
-    }
-
-    @Override
-    public void onNotificationRemoved(StatusBarNotification sbn) {
-        super.onNotificationRemoved(sbn);
     }
 }

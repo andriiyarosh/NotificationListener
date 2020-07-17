@@ -1,6 +1,9 @@
 package com.github.cr9ck.notificationrecorder.presentation.filter;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -19,6 +21,7 @@ public class FilterView extends PopupWindow {
 
     private FilterSelectedListener listener;
 
+    @SuppressLint("InflateParams")
     public FilterView(@NonNull FilterSelectedListener listener,
                       @NonNull LayoutInflater inflater) {
         super(inflater.inflate(R.layout.filter_view, null), ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
@@ -27,7 +30,7 @@ public class FilterView extends PopupWindow {
     }
 
     public void show(View view) {
-        int offset = DimensionsConverter.dpToPx(32f, view.getContext());
+        int offset = dpToPx(32f, view.getContext());
         showAtLocation(view, Gravity.TOP | Gravity.END, offset, offset * 2);
     }
 
@@ -73,6 +76,10 @@ public class FilterView extends PopupWindow {
             }
             dismiss();
         });
+    }
+
+    private int dpToPx(float dp, Context context) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     public interface FilterSelectedListener {

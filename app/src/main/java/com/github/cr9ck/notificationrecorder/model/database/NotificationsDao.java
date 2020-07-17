@@ -14,6 +14,9 @@ public interface NotificationsDao {
     @Query("SELECT * FROM Notifications WHERE timeStamp >= :start")
     Flowable<List<NotificationEntity>> getNotification(long start);
 
+    @Query("SELECT COUNT(*) FROM Notifications")
+    int getNotificationsCount();
+
     @Query("DELETE FROM Notifications")
     void deleteNotifications();
 

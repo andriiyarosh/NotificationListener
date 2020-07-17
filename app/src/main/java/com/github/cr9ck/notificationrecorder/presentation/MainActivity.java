@@ -20,7 +20,6 @@ import com.github.cr9ck.notificationrecorder.R;
 import com.github.cr9ck.notificationrecorder.databinding.ActivityMainBinding;
 import com.github.cr9ck.notificationrecorder.model.NotificationModel;
 import com.github.cr9ck.notificationrecorder.presentation.filter.FilterView;
-import com.github.cr9ck.notificationrecorder.presentation.viewmodel.MainViewModel;
 import com.github.cr9ck.notificationrecorder.services.AppForegroundService;
 
 import java.util.List;
@@ -120,7 +119,6 @@ public class MainActivity extends DaggerAppCompatActivity implements FilterView.
     }
 
     private void updateAdapter(List<NotificationModel> notifications) {
-        Log.d("TEST_TEST", "updateAdapter");
         binding.noNotificationGroup.setVisibility(notifications.isEmpty() ? View.VISIBLE : View.GONE);
         binding.rvList.setVisibility(notifications.isEmpty() ? View.GONE : View.VISIBLE);
         getAdapter().setItems(notifications);

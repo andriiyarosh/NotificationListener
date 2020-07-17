@@ -2,7 +2,6 @@ package com.github.cr9ck.notificationrecorder.services;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
@@ -38,8 +37,6 @@ public class NotificationProcessorService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.d("NotificationService", "onHandleWork");
-
         NotificationModel notification = new NotificationModel(
                 intent.getStringExtra(EXTRA_NOTIFICATION_APP_NAME),
                 intent.getStringExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME),

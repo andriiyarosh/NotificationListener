@@ -1,11 +1,10 @@
 package com.github.cr9ck.notificationrecorder.model;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class NotificationModel implements Serializable {
 
@@ -30,12 +29,12 @@ public class NotificationModel implements Serializable {
     }
 
     public String getTime() {
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return timeFormat.format(calendar.getTime());
     }
 
     public String getDay() {
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.getDefault());
         return dateFormat.format(calendar.getTime());
     }
 
