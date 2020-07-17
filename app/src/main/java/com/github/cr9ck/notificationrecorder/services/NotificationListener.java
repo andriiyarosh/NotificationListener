@@ -22,8 +22,12 @@ public class NotificationListener extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
-        sbn.getNotification().getSmallIcon();
+        if (getPackageName().equals(sbn.getPackageName())) return;
 
+        parseNotification(sbn);
+    }
+
+    private void parseNotification(StatusBarNotification sbn) {
         String appName = "";
         String text = "";
         String notificationTitle = sbn.getNotification().extras.getString(Notification.EXTRA_TITLE);
@@ -41,9 +45,13 @@ public class NotificationListener extends NotificationListenerService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(sbn.getPostTime());
 
+        sendBroadcast(sbn.getPackageName(), appName, text, calendar);
+    }
+
+    private void sendBroadcast(String packageName, String appName, String text, Calendar calendar) {
         Intent intent = new Intent(NotificationReceiver.ACTION_NOTIFICATION_RECEIVED);
         intent.putExtra(EXTRA_NOTIFICATION_APP_NAME, appName);
-        intent.putExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME, sbn.getPackageName());
+        intent.putExtra(EXTRA_NOTIFICATION_APP_PACKAGE_NAME, packageName);
         intent.putExtra(EXTRA_NOTIFICATION_CALENDAR, calendar);
         intent.putExtra(EXTRA_NOTIFICATION_TEXT, text);
         sendBroadcast(intent);
