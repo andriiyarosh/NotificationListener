@@ -3,7 +3,6 @@ package com.github.cr9ck.notificationrecorder.presentation;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;

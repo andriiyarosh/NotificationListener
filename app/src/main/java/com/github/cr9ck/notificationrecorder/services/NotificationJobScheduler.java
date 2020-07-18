@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,6 +18,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -59,7 +59,7 @@ public class NotificationJobScheduler extends JobService {
 
     private void showNotification(JobParameters jobParameters) {
         disposable.add(
-                Observable.fromCallable(() -> notificationsRepository.getNotificationsCount())
+                Single.fromCallable(() -> notificationsRepository.getNotificationsCount())
                         .subscribeOn(Schedulers.io())
                         .map(this::getNotification)
                         .subscribeOn(AndroidSchedulers.mainThread())

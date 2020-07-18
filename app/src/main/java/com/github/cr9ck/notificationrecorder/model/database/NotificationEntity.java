@@ -18,7 +18,7 @@ public class NotificationEntity {
     @ColumnInfo(name = "timeStamp")
     private long time;
 
-    public NotificationEntity(String id, String appName, String appPackageName, String notificationText, long time) {
+    public NotificationEntity(@NonNull String id, String appName, String appPackageName, String notificationText, long time) {
         this.id = id;
         this.appName = appName;
         this.appPackageName = appPackageName;
@@ -26,11 +26,12 @@ public class NotificationEntity {
         this.time = time;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -38,31 +39,16 @@ public class NotificationEntity {
         return appName;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
-
     public String getNotificationText() {
         return notificationText;
-    }
-
-    public void setNotificationText(String notificationText) {
-        this.notificationText = notificationText;
     }
 
     public long getTime() {
         return time;
     }
 
-    public void setTime(long time) {
-        this.time = time;
-    }
-
     public String getAppPackageName() {
         return appPackageName;
     }
 
-    public void setAppPackageName(String appPackageName) {
-        this.appPackageName = appPackageName;
-    }
 }
